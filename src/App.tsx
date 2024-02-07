@@ -20,6 +20,11 @@ import { DialogClose } from "@radix-ui/react-dialog";
 
 function App() {
   const [seats, setSeats] = useState([16]);
+  const [votes, addVotes] = useState<AddVotesSchema[]>([]);
+  const [winningParties, setWinningParties] = useState<string[]>([]);
+  const [calculatedSeats, setCalculatedSeats] = useState<{
+    [key: string]: number;
+  }>({});
 
   const handleSliderChange = (value: SetStateAction<number[]>) => {
     setSeats(value);
@@ -36,11 +41,7 @@ function App() {
     resolver: zodResolver(addVotesSchema),
   });
 
-  const [votes, addVotes] = useState<AddVotesSchema[]>([]);
-
-  const [winningParties, setWinningParties] = useState<string[]>([]);
-
-  function calculateSeats() {
+  const calculateSeats = () => {
     const votesCopy = [...votes];
     const seatsByParty: { [key: string]: number } = {};
     const winningParties: string[] = [];
@@ -68,16 +69,13 @@ function App() {
     }
 
     setWinningParties(winningParties);
+
     return seatsByParty;
-  }
+  };
 
-  const [calculatedSeats, setCalculatedSeats] = useState<{
-    [key: string]: number;
-  }>({});
-
-  function handleAddVotes(data: AddVotesSchema) {
+  const handleAddVotes = (data: AddVotesSchema) => {
     addVotes([...votes, data]);
-  }
+  };
 
   useEffect(() => {
     setCalculatedSeats(calculateSeats());
@@ -109,14 +107,14 @@ function App() {
   return (
     <>
       <div className="min-h-screen min-w-screen flex justify-center items-center">
-        <div className="w-3/4 md:w-7/12 flex flex-col space-y-4">
+        <div className="w-3/4 md:w-7/12 flex flex-col space-y-4 h-screen justify-center">
           <div>
             <h3 className="text-2xl font-extrabold tracking-tight">
               Contagem do Congresso
             </h3>
           </div>
 
-          <div className="w-full h-96 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+          <div className="w-full h-3/4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <ScrollArea className="border rounded-md w-full md:w-2/3 p-4 h-2/5 md:h-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {renderSeats()}
